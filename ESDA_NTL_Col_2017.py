@@ -58,7 +58,6 @@ def run_spatial_analysis(_merged):
 csv_url = "https://raw.githubusercontent.com/LauPrieto/First_AC_Mocoa_Col/main/Datasets/zonal_stats_colombia_municipalities.csv"
 geojson_url = "https://raw.githubusercontent.com/LauPrieto/First_AC_Mocoa_Col/main/colombiaGeometry.geojson"
 
-# Mostrar indicador de carga la primera vez que se descarga
 with st.spinner('Cargando y procesando capas geoespaciales desde GitHub...'):
     merged = load_and_process_data(csv_url, geojson_url)
     w, y, y_std, lag_y, moran, li = run_spatial_analysis(merged)
@@ -87,9 +86,8 @@ geojson_data = merged_web[['geometry', 'ADM2_NAME_x', 'lisa_cluster', 'ntl_log']
 scatter_data = [{'x': float(x), 'y': float(y_val), 'c': int(c)} for x, y_val, c in zip(y_std, lag_y, merged['lisa_cluster'])]
 stats = {"moran_i": round(float(moran.I), 4), "p_value": round(float(moran.p_sim), 4), "z_score": round(float(moran.z_sim), 2), "n_obs": len(merged)}
 
-# Dashboard HTML Estructurado (Igual a tu diseño original)
-html_template = """
-<!DOCTYPE html>
+# Dashboard HTML sin sangrías excesivas ni caracteres ocultos
+html_template = """<!DOCTYPE html>
 <html>
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -98,19 +96,40 @@ html_template = """
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f4f6f8; margin: 0; padding: 20px; }
         .header { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #1a73e8; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-
-        /* KPI Bar at top */
         .kpi-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
         .kpi-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
         .kpi-val { font-size: 1.5rem; font-weight: bold; color: #1a73e8; }
-
-        /* Main 2x2 Grid */
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .viz-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 500px; }
-
         #map { height: 100%; width: 100%; border-radius: 8px; flex-grow: 1; }
         .canvas-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; }
         .weights-img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
-
         h3 { margin-top: 0; color: #333; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .note { font-size: 0.75rem; color: #777;
+        .note { font-size: 0.75rem; color: #777; font-style: italic; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Colombia ESDA Dashboard (2017)</h1>
+        <p>Analysis: <b>ln(1 + mean NTL)</b> | Weights: <b>KNN (k=5)</b> | Projection: <b>EPSG:3116</b></p>
+    </div>
+
+    <div class="kpi-container">
+        <div class="kpi-card">Moran's I <div class="kpi-val">MORAN_I</div></div>
+        <div class="kpi-card">Z-Score <div class="kpi-val">Z_SCORE</div></div>
+        <div class="kpi-card">P-Value <div class="kpi-val">P_VALUE</div></div>
+        <div class="kpi-card">Municipalities <div class="kpi-val">N_OBS</div></div>
+    </div>
+
+    <div class="main-grid">
+        <div class="viz-card">
+            <h3>📍 LISA Cluster Map</h3>
+            <div id="map"></div>
+        </div>
+        <div class="viz-card">
+            <h3>🔗 Spatial Weights Connectivity</h3>
+            <img class="weights-img" src="data:image/png;base64,WEIGHTS_IMAGE" alt="Spatial Weights Plot">
+            <p class="note">Projected distance-based KNN connections.</p>
+        </div>
+        <div class="viz-card">
+            <h3>📦 Cluster
