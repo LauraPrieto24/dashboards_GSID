@@ -17,7 +17,7 @@ st.set_page_config(layout='wide', page_title='Colombia Spatial Analysis')
 def load_and_process():
     # Nota: Asegúrate de que las rutas sean accesibles en tu entorno local
     df = pd.read_csv('/content/drive/MyDrive/GSID/First_AC_Mocoa_Col/Datasets/zonal_stats_colombia_municipalities.csv')
-    gdf = gpd.read_file('https://raw.githubusercontent.com/LauraPrieto24/dashboards_GSID/main/colombiaGeometry.geojson')
+    gdf = gpd.read_file('https://raw.githubusercontent.com/LauraPrieto24/dashboards_GSID/refs/heads/main/NTL_VIIRS_like.csv')
 
     year_col = 'year' if 'year' in df.columns else 'YEAR'
     val_col = 'mean' if 'mean' in df.columns else df.columns[-1]
