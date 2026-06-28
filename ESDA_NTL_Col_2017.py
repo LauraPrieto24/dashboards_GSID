@@ -55,8 +55,9 @@ def run_spatial_analysis(_merged):
     return w, y, y_std, lag_y, moran, li
 
 # --- 1. Carga de Datos desde GitHub ---
-csv_url = "https://raw.githubusercontent.com/LauPrieto/First_AC_Mocoa_Col/main/Datasets/zonal_stats_colombia_municipalities.csv"
-geojson_url = "https://raw.githubusercontent.com/LauPrieto/First_AC_Mocoa_Col/main/colombiaGeometry.geojson"
+
+csv_url = "NTL_VIIRS_like.csv"
+geojson_url = "colombiaGeometry.geojson"
 
 with st.spinner('Cargando y procesando capas geoespaciales desde GitHub...'):
     merged = load_and_process_data(csv_url, geojson_url)
