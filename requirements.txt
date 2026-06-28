@@ -1,0 +1,8 @@
+streamlit
+pandas
+geopandas
+numpy
+matplotlib
+libpysal
+esda
+splot
